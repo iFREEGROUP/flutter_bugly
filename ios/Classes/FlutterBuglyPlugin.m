@@ -21,6 +21,11 @@
           if(!isChannelEmpty){
             config.channel = channel;
           }
+
+          // 设置debugMode, isDebug为YES则打开调试模式
+          BOOL isDebug = [call.arguments[@"isDebug"] boolValue];
+          config.debugMode = isDebug;
+          
           [Bugly startWithAppId:appId config:config];
           NSLog(@"Bugly appId: %@", appId);
 

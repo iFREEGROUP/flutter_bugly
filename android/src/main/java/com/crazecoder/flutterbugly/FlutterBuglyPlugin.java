@@ -9,10 +9,8 @@ import androidx.annotation.NonNull;
 import com.crazecoder.flutterbugly.bean.BuglyInitResultInfo;
 import com.crazecoder.flutterbugly.utils.JsonUtil;
 import com.crazecoder.flutterbugly.utils.MapUtil;
-import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
 
-import io.flutter.BuildConfig;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -33,7 +31,6 @@ public class FlutterBuglyPlugin implements FlutterPlugin, MethodCallHandler, Act
     private static Activity activity;
     private FlutterPluginBinding flutterPluginBinding;
 
-
     /**
      * Plugin registration.
      */
@@ -51,7 +48,7 @@ public class FlutterBuglyPlugin implements FlutterPlugin, MethodCallHandler, Act
         switch (call.method) {
             case "initBugly":
                 if (call.hasArgument("appId")) {
-                    String appId = call.argument("appId").toString();
+                    String appId = call.argument("appId");
 
                     CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(activity.getApplicationContext());
 
@@ -61,7 +58,26 @@ public class FlutterBuglyPlugin implements FlutterPlugin, MethodCallHandler, Act
                             strategy.setAppChannel(channel);
                     }
 
-                    Bugly.init(activity.getApplicationContext(), appId, BuildConfig.DEBUG, strategy);
+                    // 设置设备型号
+                    if (call.hasArgument("deviceModel")) {
+                        String deviceModel = call.argument("deviceModel");
+                        if (!TextUtils.isEmpty(deviceModel))
+                            strategy.setDeviceModel(deviceModel);
+                    }
+
+                    // 设置设备id
+                    if (call.hasArgument("deviceId")) {
+                        String deviceId = call.argument("deviceId");
+                        if (!TextUtils.isEmpty(deviceId))
+                            strategy.setDeviceID(deviceId);
+                    }
+
+                    boolean isDebug = false;
+                    if (call.hasArgument("isDebug")) {
+                        isDebug = Boolean.TRUE.equals(call.argument("isDebug"));
+                    }
+
+                    CrashReport.initCrashReport(activity.getApplicationContext(), "appId", isDebug, strategy);
 
                     result(getResultBean(true, appId, "Bugly 初始化成功"));
                 } else {
@@ -100,6 +116,10 @@ public class FlutterBuglyPlugin implements FlutterPlugin, MethodCallHandler, Act
                 break;
             case "postCatchedException":
                 postException(call);
+                result(null);
+                break;
+            case "testCrash":
+                CrashReport.testJavaCrash();
                 result(null);
                 break;
             default:

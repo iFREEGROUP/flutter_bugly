@@ -21,7 +21,9 @@ class FlutterBugly {
     String? androidAppId,
     String? iOSAppId,
     String? channel, // 自定义渠道标识
-    int initDelay = 0, // 延迟初始化，单位秒
+    String? deviceId, // 自定义设备标识
+    String? deviceModel, // 自定义设备型号
+    bool isDebug = false, // 是否开启 debug 模式
   }) async {
     assert(
       (Platform.isAndroid && androidAppId != null) ||
@@ -32,8 +34,11 @@ class FlutterBugly {
     Map<String, Object?> map = {
       "appId": Platform.isAndroid ? androidAppId : iOSAppId,
       "channel": channel,
-      "initDelay": initDelay,
+      "deviceId": deviceId,
+      "deviceModel": deviceModel,
+      "isDebug": isDebug,
     };
+
     final dynamic result = await _channel.invokeMethod('initBugly', map);
     Map resultMap = json.decode(result);
     var resultBean = InitResultInfo.fromJson(resultMap as Map<String, dynamic>);

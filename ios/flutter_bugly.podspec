@@ -18,6 +18,6 @@ A new Flutter bugly plugin.
   s.dependency 'Bugly'
   s.static_framework = true
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '11.0'
 end
 
