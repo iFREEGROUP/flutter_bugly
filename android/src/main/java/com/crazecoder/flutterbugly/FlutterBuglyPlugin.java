@@ -77,7 +77,7 @@ public class FlutterBuglyPlugin implements FlutterPlugin, MethodCallHandler, Act
                         isDebug = Boolean.TRUE.equals(call.argument("isDebug"));
                     }
 
-                    CrashReport.initCrashReport(activity.getApplicationContext(), "appId", isDebug, strategy);
+                    CrashReport.initCrashReport(activity.getApplicationContext(), appId, isDebug, strategy);
 
                     result(getResultBean(true, appId, "Bugly 初始化成功"));
                 } else {
