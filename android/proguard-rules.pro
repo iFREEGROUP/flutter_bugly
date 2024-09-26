@@ -32,3 +32,4 @@
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
 -keep class com.crazecoder.flutterbugly.bean.** { *; }
+-keep class com.crazecoder.flutterbugly.FlutterBuglyPlugin
